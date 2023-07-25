@@ -1,9 +1,9 @@
 
 ####---- User Input ----####
 
-Junction_File <- "TCGA_CHOL_SpliceJxn_noGTEx_noBM_GRTR0.txt"
+Junction_File <- "Example_Data/TCGA_CHOL_SpliceJxn_noGTEx_noBM_GRTR0.txt"
 
-Meta_File <- "TCGA_CHOL_SpliceJxn_Meta.txt"
+Meta_File <- "Example_Data/TCGA_CHOL_SpliceJxn_Meta.txt"
 
 Column_Name <- "tcga.cgc_sample_sample_type"
 
