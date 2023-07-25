@@ -22,6 +22,8 @@
 
 Go to [Recount3's Study Explorer](https://jhubiostatistics.shinyapps.io/recount3-study-explorer/) to browse the data and choose a study or list of studies of interest. The workflow will require the proper project name(s), as shown in the Study Explorer.
 
+![alt text](https://github.com/shawlab-moffitt/Splice-Junction-Filter-Workflow/blob/main/Example_Data/Recount3_Demo_Pic.png?raw=true)
+
 # R/SpliceJxn_Workflow.R
 
 Here is a full workflow script where users can provide a project names from Recount3 and obtain normalized and filtered Splice Junction counts and meta data.
@@ -53,11 +55,11 @@ Here is a full workflow script where users can provide a project names from Reco
 
 # R/SpliceJxn_Subset.R
 
-Some project data, for example TCGA, has a mix of sample types (e.g. Tumor, Normal, Metastatic). This script allows the user to subset the junction data output from [Setp 1]() by a column of choice from the meta data. 
+Some project data, for example TCGA, has a mix of sample types (e.g. Tumor, Normal, Metastatic). This script allows the user to subset the junction data output from [SpliceJxn_Workflow](https://github.com/shawlab-moffitt/Splice-Junction-Filter-Workflow/tree/main#rsplicejxn_workflowr) by a column of choice from the meta data. 
 
 ## Input
 
-* **Junction_File:** A junction matrix output from Step 1
+* **Junction_File:** A junction matrix output from [SpliceJxn_Workflow](https://github.com/shawlab-moffitt/Splice-Junction-Filter-Workflow/tree/main#rsplicejxn_workflowr)
 * **Meta_File:** Meta data from the same project as the Junction_File
 * **Column_Name:** A desired column name from the meta data to subset the junction data based on (e.g. "tcga.cgc_sample_sample_type")
 
@@ -77,7 +79,7 @@ This script converts a splice junction expression file to a BED file. This is al
 
 ## Input
 
-* **JxnFile:** A junction matrix output from Step 1
+* **JxnFile:** A junction matrix output from [SpliceJxn_Workflow](https://github.com/shawlab-moffitt/Splice-Junction-Filter-Workflow/tree/main#rsplicejxn_workflowr)
 * **AnnoFile:** Junction name annotation data from the same filtering step and project as the Junction_File
 * **OutFile:** A desired output file name
 
