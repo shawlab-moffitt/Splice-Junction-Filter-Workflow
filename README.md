@@ -85,23 +85,14 @@ This script converts a splice junction expression file to a BED file. This is al
 
 1. Load libraries and read in data
 2. Split the junction name into separate columns (Chromosome, Start, Stop, Strand)
-3. Merge annotation information 
+3. Merge annotation information from the junction name annotation file (this denotes if the junction is known or unknown)
+4. Calculate the average junction expression for each junction and the sum of the total samples expressing each junction
+5. Write out BED files
 
+## Output
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+* **Average Expression BED File:** Junction position information, annotation information, and average expression for each junction
+* **Sample Count Expressing BED File:** Junction position information, annotation information, and total samples expressing each junction
 
 
 
