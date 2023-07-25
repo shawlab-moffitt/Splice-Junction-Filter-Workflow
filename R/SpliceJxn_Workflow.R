@@ -6,9 +6,9 @@ Project_Directory <- "Example_Data/"
 
 Project_Name_List <- "CHOL,ACC"
 
-FilterOut_Below <- 1
+Expr_CutPoint  <- 1
 
-SampleN_FilterMin <- 10
+SampleN_CutPoint <- 10
 
 
 
@@ -37,6 +37,9 @@ options("recount3_organism_human_project_homes_URL_http://duffel.rail.bio/recoun
 load(url("http://shawlab.science/shiny/GTEx_AMLBM_JunctionList/GTEx_AMLBM_JxnPresent_Vector.RData"))
 
 recount3_proj <- available_projects()
+
+FilterOut_Below <- Expr_CutPoint 
+SampleN_FilterMin <- SampleN_CutPoint
 
 last_char <- str_sub(Project_Directory,-1,-1)
 if (last_char != "/") {
