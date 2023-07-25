@@ -1,0 +1,12 @@
+CHOL Junction Filtering Log File
+2023-07-24 17:37:07: Sarting junction number: 821356
+2023-07-24 17:37:09: Writing out Clinical Data: ~/R/data/TCGA/SpliceJunction/SpliceJunction_ByStudyTCGA_CHOL/TCGA_CHOL_SpliceJxn_Meta.txt
+2023-07-24 17:37:23: Number of junctions not present in GTEx: 38145
+2023-07-24 17:37:23: Writing out Junctions filtered by GTEx: ~/R/data/TCGA/SpliceJunction/SpliceJunction_ByStudyTCGA_CHOL/TCGA_CHOL_SpliceJxn_noGTEx_noBM.txt
+2023-07-24 17:37:23: Writing out filtered junction annotation: ~/R/data/TCGA/SpliceJunction/SpliceJunction_ByStudyTCGA_CHOL/TCGA_CHOL_SpliceJxn_noGTEx_noBM_Anno.txt
+2023-07-24 17:37:27: Number of junctions with a row sum > 0: 38145
+2023-07-24 17:37:27: Writing out Junctions with a row sum > 0: ~/R/data/TCGA/SpliceJunction/SpliceJunction_ByStudyTCGA_CHOL/TCGA_CHOL_SpliceJxn_noGTEx_noBM_GRTR0.txt
+2023-07-24 17:37:28: Writing out filtered junction annotation: ~/R/data/TCGA/SpliceJunction/SpliceJunction_ByStudyTCGA_CHOL/TCGA_CHOL_SpliceJxn_noGTEx_noBM_GRTR0_Anno.txt
+2023-07-24 17:37:31: Number of junctions with a CPM > 1 in more than 10 samples: 342
+2023-07-24 17:37:31: Writing out Junctions filtered by criteria: ~/R/data/TCGA/SpliceJunction/SpliceJunction_ByStudyTCGA_CHOL/TCGA_CHOL_SpliceJxn_noGTEx_noBM_GRTR1in10.txt
+2023-07-24 17:37:31: Writing out filtered junction annotation: ~/R/data/TCGA/SpliceJunction/SpliceJunction_ByStudyTCGA_CHOL/TCGA_CHOL_SpliceJxn_noGTEx_noBM_GRTR1in10_anno.txt
