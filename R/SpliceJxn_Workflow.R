@@ -2,9 +2,9 @@
 
 ####---- User Input ----####
 
-Project_Directory <- "~/R/data/ShawTim/Splice_Junctions/BoneMarrow_SpliceJunctions"
+Project_Directory <- "Example_Data/"
 
-#Project_Name_List <- "SRP149794,SRP118733,SRP098651"
+Project_Name_List <- "CHOL,ACC"
 
 FilterOut_Below <- 1
 
