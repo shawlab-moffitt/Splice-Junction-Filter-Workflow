@@ -137,6 +137,11 @@ Jxn2Bed <- function(JxnFile,AnnoFile,OutFile) {
   
   bed_AvgExpr_out <- bed_AvgExpr[,-1]
   bed_SumExpr_out <- bed_SumExpr[,-1]
+                       
+  bed_AvgExpr_out <- bed_AvgExpr_out %>%
+    relocate(strand, .after = AverageExpr)
+  bed_SumExpr_out <- bed_SumExpr_out %>%
+    relocate(strand, .after = SumExpr)
   
   write_delim(bed_AvgExpr_out,paste0(OutFile,"_AvgExpr.bed"), col_names = F, delim = '\t')
   write_delim(bed_SumExpr_out,paste0(OutFile,"_TotalSampExpr.bed"), col_names = F, delim = '\t')
