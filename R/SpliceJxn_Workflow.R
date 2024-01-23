@@ -24,6 +24,7 @@ library(dplyr)
 library(data.table)
 library(slam)
 library(stringr)
+library(tibble)
 
 
 options(timeout = max(1000, getOption("timeout")))
@@ -102,6 +103,8 @@ dgTMatrix_filter <- function(m,criteria,number) {
   return(m_filter)
 }
 
+
+
 Jxn2Bed <- function(JxnFile,AnnoFile,OutFile) {
   jxn <- JxnFile
   nJxnCol <- ncol(jxn)
@@ -149,6 +152,7 @@ Jxn2Bed <- function(JxnFile,AnnoFile,OutFile) {
 
 for (i in Project_Name_List) {
   
+  ## Get project information
   Proj_home <- recount3_proj[which(recount3_proj$project == i),"project_home"]
   Proj_org <- recount3_proj[which(recount3_proj$project == i),"organism"]
   Proj_source <- toupper(recount3_proj[which(recount3_proj$project == i),"file_source"])
@@ -169,17 +173,21 @@ for (i in Project_Name_List) {
     project_home = Proj_home,
     organism = Proj_org,
     type = "jxn",
-    #annotation = "gencode_v29",
     verbose = FALSE,
     bfc = recount3_cache(Cache_dir)
   )
   
   ## Junction Data
   mat <- assay(temp_rse_jxn)
-  temp_meta <- as.data.frame(t(do.call(rbind,temp_rse_jxn@colData@listData)))
   print(paste0(Sys.time(),": Sarting Junction Number: ",nrow(mat)))
   write(paste0(Sys.time(),": Sarting junction number: ",nrow(mat)),
         file = paste0(Sub_Proj_dir,File_prefix,"_JunctionFilter_Log.txt"),append = T, ncolumns = 1)
+  
+  ## Meta Data
+  temp_meta <- as.data.frame(t(do.call(rbind,temp_rse_jxn@colData@listData)))
+  write(paste0(Sys.time(),": Writing out Clinical Data: ",paste0(Sub_Proj_dir,File_prefix,"_SpliceJxn_Meta.txt")),
+        file = paste0(Sub_Proj_dir,File_prefix,"_JunctionFilter_Log.txt"),append = T, ncolumns = 1)
+  write_delim(temp_meta,paste0(Sub_Proj_dir,File_prefix,"_SpliceJxn_Meta.txt"), delim = '\t')
   
   if (SampleN_FilterMin == 10) {
     if (nrow(temp_meta) <= SampleN_FilterMin) {
@@ -189,11 +197,6 @@ for (i in Project_Name_List) {
   
   JunctionData <- as.data.frame(t(do.call(rbind, temp_rse_jxn@rowRanges@elementMetadata@listData)))
   rownames(JunctionData) <- rownames(mat)
-  
-  ## Meta Data
-  write(paste0(Sys.time(),": Writing out Clinical Data: ",paste0(Sub_Proj_dir,File_prefix,"_SpliceJxn_Meta.txt")),
-        file = paste0(Sub_Proj_dir,File_prefix,"_JunctionFilter_Log.txt"),append = T, ncolumns = 1)
-  write_delim(temp_meta,paste0(Sub_Proj_dir,File_prefix,"_SpliceJxn_Meta.txt"), delim = '\t')
   
   ## Normalizing
   print(paste0(Sys.time(), ": Normalizing"))
@@ -205,6 +208,7 @@ for (i in Project_Name_List) {
   
   if (length(KeepRows) > 0) {
     
+    ## Write out normalized junction matrix
     mat_norm_noGTEx <- mat_norm[KeepRows,]
     print(paste0(Sys.time(),": Number of junctions not present in GTEx: ",nrow(mat_norm_noGTEx)))
     write(paste0(Sys.time(),": Number of junctions not present in GTEx: ",nrow(mat_norm_noGTEx)),
@@ -215,13 +219,14 @@ for (i in Project_Name_List) {
           file = paste0(Sub_Proj_dir,File_prefix,"_JunctionFilter_Log.txt"),append = T, ncolumns = 1)
     write_delim(mat_norm_noGTEx_df,paste0(Sub_Proj_dir,File_prefix,"_SpliceJxn_noGTEx_noBM.txt"), delim = '\t')
     
+    ## Write out normalized junction annotation data
     JunctionData_filtered <- JunctionData[rownames(mat_norm_noGTEx),]
     JunctionData_filtered <- tibble::rownames_to_column(JunctionData_filtered,var = "Junction")
     write(paste0(Sys.time(),": Writing out filtered junction annotation: ",paste0(Sub_Proj_dir,File_prefix,"_SpliceJxn_noGTEx_noBM_Anno.txt")),
           file = paste0(Sub_Proj_dir,File_prefix,"_JunctionFilter_Log.txt"),append = T, ncolumns = 1)
     write_delim(JunctionData_filtered,paste0(Sub_Proj_dir,File_prefix,"_SpliceJxn_noGTEx_noBM_Anno.txt"), delim = '\t')
     
-    #Jxn2Bed(mat_norm_noGTEx_df,JunctionData_filtered,paste0(Sub_Proj_dir,File_prefix,"_SpliceJxn_noGTEx_noBM"))
+    Jxn2Bed(mat_norm_noGTEx_df,JunctionData_filtered,paste0(Sub_Proj_dir,File_prefix,"_SpliceJxn_noGTEx_noBM"))
     
     ## Remove Junctions of all 0 counts
     print(paste0(Sys.time(), ": Filtering based on row sum > 0"))
@@ -235,19 +240,20 @@ for (i in Project_Name_List) {
           file = paste0(Sub_Proj_dir,File_prefix,"_JunctionFilter_Log.txt"),append = T, ncolumns = 1)
     write_delim(mat_norm_noGTEx_nz_df,paste0(Sub_Proj_dir,File_prefix,"_SpliceJxn_noGTEx_noBM_GRTR0.txt"), delim = '\t')
     
+    ## Write out normalized junction > 0 annotation data
     JunctionData_filtered <- JunctionData[rownames(mat_norm_noGTEx_nz),]
     JunctionData_filtered <- tibble::rownames_to_column(JunctionData_filtered,var = "Junction")
     write(paste0(Sys.time(),": Writing out filtered junction annotation: ",paste0(Sub_Proj_dir,File_prefix,"_SpliceJxn_noGTEx_noBM_GRTR0_Anno.txt")),
           file = paste0(Sub_Proj_dir,File_prefix,"_JunctionFilter_Log.txt"),append = T, ncolumns = 1)
     write_delim(JunctionData_filtered,paste0(Sub_Proj_dir,File_prefix,"_SpliceJxn_noGTEx_noBM_GRTR0_Anno.txt"), delim = '\t')
     
-    #Jxn2Bed(mat_norm_noGTEx_nz_df,JunctionData_filtered,paste0(Sub_Proj_dir,File_prefix,"_SpliceJxn_noGTEx_noBM_GRTR0"))
+    Jxn2Bed(mat_norm_noGTEx_nz_df,JunctionData_filtered,paste0(Sub_Proj_dir,File_prefix,"_SpliceJxn_noGTEx_noBM_GRTR0"))
     
     ## Filtering based on criteria
     if (!is.null(FilterOut_Below) & !is.null(SampleN_FilterMin)) {
       print(paste0(Sys.time(), ": Filtering based on criteria"))
       mat_norm_noGTEx_nz_filter <- dgTMatrix_filter(mat_norm_noGTEx_nz,FilterOut_Below,SampleN_FilterMin)
-      if (nrow(mat_norm_noGTEx_nz_filter > 0)) {
+      if (nrow(mat_norm_noGTEx_nz_filter) > 0) {
         mat_norm_noGTEx_nz_filter_df <- as.data.frame(as.matrix(mat_norm_noGTEx_nz_filter))
         mat_norm_noGTEx_nz_filter_df <- tibble::rownames_to_column(mat_norm_noGTEx_nz_filter_df,var = "Junction")
         print(paste0(Sys.time(),": Number of junctions with a CPM > ",FilterOut_Below," in more than ",SampleN_FilterMin," samples: ",nrow(mat_norm_noGTEx_nz_filter_df)))
@@ -263,7 +269,7 @@ for (i in Project_Name_List) {
               file = paste0(Sub_Proj_dir,File_prefix,"_JunctionFilter_Log.txt"),append = T, ncolumns = 1)
         write_delim(JunctionData_filtered,paste0(Sub_Proj_dir,File_prefix,"_SpliceJxn_noGTEx_noBM_GRTR",FilterOut_Below,"in",SampleN_FilterMin,"_anno.txt"), delim = '\t')
         
-        #Jxn2Bed(mat_norm_noGTEx_nz_filter_df,JunctionData_filtered,paste0(Sub_Proj_dir,File_prefix,"_SpliceJxn_noGTEx_noBM_GRTR",FilterOut_Below,"in",SampleN_FilterMin))
+        Jxn2Bed(mat_norm_noGTEx_nz_filter_df,JunctionData_filtered,paste0(Sub_Proj_dir,File_prefix,"_SpliceJxn_noGTEx_noBM_GRTR",FilterOut_Below,"in",SampleN_FilterMin))
       } else {
         print(paste0(Sys.time(),": Number of junctions with a CPM > ",FilterOut_Below," in more than ",SampleN_FilterMin," samples: ",nrow(mat_norm_noGTEx_nz_filter_df)))
         write(paste0(Sys.time(),": Number of junctions with a CPM > ",FilterOut_Below," in more than ",SampleN_FilterMin," samples: ",nrow(mat_norm_noGTEx_nz_filter_df)),
@@ -299,7 +305,7 @@ for (i in Project_Name_List) {
           file = paste0(Sub_Proj_dir,File_prefix,"_JunctionFilter_Log.txt"),append = T, ncolumns = 1)
     write_delim(JunctionData_filtered,paste0(Sub_Proj_dir,File_prefix,"_SpliceJxn_GRTR0_Anno.txt"), delim = '\t')
     
-    #Jxn2Bed(mat_norm_nz_df,JunctionData_filtered,paste0(Sub_Proj_dir,File_prefix,"_SpliceJxn_GRTR0"))
+    Jxn2Bed(mat_norm_nz_df,JunctionData_filtered,paste0(Sub_Proj_dir,File_prefix,"_SpliceJxn_GRTR0"))
     
     ## Filtering based on criteria
     if (!is.null(FilterOut_Below) & !is.null(SampleN_FilterMin)) {
