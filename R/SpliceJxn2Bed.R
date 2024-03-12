@@ -57,6 +57,11 @@ bed_SumExpr <- merge(bed,jxn[,c("Junction","SumExpr")], sort = F)
 bed_AvgExpr_out <- bed_AvgExpr[,-1]
 bed_SumExpr_out <- bed_SumExpr[,-1]
 
+bed_AvgExpr_out <- bed_AvgExpr_out %>%
+  relocate(strand, .after = AverageExpr)
+bed_SumExpr_out <- bed_SumExpr_out %>%
+  relocate(strand, .after = SumExpr)
+
 if (exists("OutFile")) {
   if (grepl(".bed$",OutFile)) {
     gsub(".bed$","",OutFile)
